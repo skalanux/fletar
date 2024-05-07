@@ -1,1 +1,4 @@
-flet
+flet = "^0.21.2"
+pyinstaller = "^6.5.0"
+gspread = "^6.1.0"
+
