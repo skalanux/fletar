@@ -1,120 +1,63 @@
-import time
-
 import flet as ft
+from api import Concept, PaymentType, API
 
 
-resultado = ft.Text("B")
+STORAGE = API()
 
-def old_main(page: ft.Page):
-    # add/update controls on Page
-    page.add(
-    ft.Row(controls=[
-        t:=ft.Text("A"),
-        resultado,
-        ft.Text("C")
-    ]))
-    page.add(
-     ft.Row(controls=[
-        ft.TextField(label="Your name"),
-        ft.ElevatedButton(text="Say my name!", on_click=button_clicked)
-    ])
-    )
-    for i in range(10):
-        t.value = f"Step {i}"
-        page.update()
-        time.sleep(1)
-
-def button_clicked(e):
-    resultado.value='Click'
-
-def norefs_main(page):
-
-    first_name = ft.TextField(label="First name", autofocus=True)
-    last_name = ft.TextField(label="Last name")
-    greetings = ft.Column()
-
-    def btn_click(e):
-        greetings.controls.append(ft.Text(f"Hello, {first_name.value} {last_name.value}!"))
-        first_name.value = ""
-        last_name.value = ""
-        page.update()
-        first_name.focus()
-
-    page.add(
-        first_name,
-        last_name,
-        ft.ElevatedButton("Say hello!", on_click=btn_click),
-        greetings,
-    )
-
-
-def refs_main(page):
-
-    first_name = ft.Ref[ft.TextField]()
-    last_name = ft.Ref[ft.TextField]()
-    greetings = ft.Ref[ft.Column]()
-
-    def btn_click(e):
-        greetings.current.controls.append(
-            ft.Text(f"Hello, {first_name.current.value} {last_name.current.value}!")
-        )
-        first_name.current.value = ""
-        last_name.current.value = ""
-        page.update()
-        first_name.current.focus()
-
-    page.add(
-        ft.TextField(ref=first_name, label="First name", autofocus=True),
-        ft.TextField(ref=last_name, label="Last name"),
-        ft.ElevatedButton("Say hello!", on_click=btn_click),
-        ft.Column(ref=greetings),
-    )
-
-def counter_main(page: ft.Page):
-    page.title = "Flet counter example"
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-
-    txt_number = ft.TextField(value="0", text_align="right", width=100)
-
-    def minus_click(e):
-        txt_number.value = str(int(txt_number.value) - 1)
-        page.update()
-
-    def plus_click(e):
-        txt_number.value = str(int(txt_number.value) + 1)
-        page.update()
-
-    page.add(
-        ft.Row(
-            [
-                ft.IconButton(ft.icons.REMOVE, on_click=minus_click),
-                txt_number,
-                ft.IconButton(ft.icons.ADD, on_click=plus_click),
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-        )
-    )
+def save_spent(price, detail, category, payment_method):
+    """Save spent into the spreadsheet."""
+    installments = ''
+    # Llamada a la función para enviar la nueva fila
+    new_entry = STORAGE.build_entry(category, detail, price, payment_method, installments)
+    try:
+        response=STORAGE.insert_row(new_entry)
+    except Exception as err:
+        print(err)
 
 
 def main(page: ft.Page):
-    def button_clicked(e):
-        output_text.value = f"Dropdown value is:  {color_dropdown.value}"
-        page.update()
+    async def add_clicked(e):
+        spent_view.controls.append(ft.Checkbox(label=spent.value))
+        save_spent(spent.value, spent_detail.value, spent_category.value, spent_payment_method.value)
+        spent.value = ""
+        spent_detail.value = ""
+        view.update()
 
-    output_text = ft.Text()
-    submit_btn = ft.ElevatedButton(text="Submit", on_click=button_clicked)
-    color_dropdown = ft.Dropdown(
-        width=100,
-        options=[
-            ft.dropdown.Option("Red"),
-            ft.dropdown.Option("Green"),
-            ft.dropdown.Option("Blue"),
+    CONFIGURATION = STORAGE.get_config()
+
+    spent = ft.TextField(hint_text="Cuánto?", expand=True)
+    spent_detail = ft.TextField(hint_text="En qué?", expand=True)
+    spent_category = ft.Dropdown(
+        width=150,
+        options=[ft.dropdown.Option(k) for k in CONFIGURATION.get(API.CATEGORIES_KEY)]
+    )
+    spent_payment_method= ft.Dropdown(
+        width=150,
+        options=[ft.dropdown.Option(k) for k in CONFIGURATION.get(API.PAYMENT_METHODS_KEY)]
+    )
+
+    spent_view = ft.Column()
+    view=ft.Column(
+        width=800,
+        controls=[
+            ft.Row(
+                controls=[
+                    spent,
+                    spent_detail,
+                    spent_category,
+                    spent_payment_method,
+                    ft.FloatingActionButton(icon=ft.icons.ADD, on_click=add_clicked),
+                ],
+            ),
+            spent_view,
         ],
     )
-    page.add(color_dropdown, submit_btn, output_text)
 
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.title = "Fletar(al presiduende)"
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.scroll = ft.ScrollMode.ADAPTIVE
+    page.theme = ft.Theme(color_scheme_seed="green")
+    page.add(view)
+ 
 ft.app(target=main)
-#ft.app(target=main)
-#ft.app(port=8550, target=main)
-ft.app(target=main, view=ft.AppView.WEB_BROWSER)
-
