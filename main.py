@@ -60,4 +60,4 @@ def main(page: ft.Page):
     page.theme = ft.Theme(color_scheme_seed="green")
     page.add(view)
  
-ft.app(target=main)
+ft.app(target=main, view=ft.AppView.WEB_BROWSER)
