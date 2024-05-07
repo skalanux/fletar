@@ -24,7 +24,6 @@ def main(page: ft.Page):
         view.update()
 
     CONFIGURATION = STORAGE.get_config()
-
     spent = ft.TextField(hint_text="Cuánto?", expand=True)
     spent_detail = ft.TextField(hint_text="En qué?", expand=True)
     spent_category = ft.Dropdown(
@@ -33,7 +32,7 @@ def main(page: ft.Page):
     )
     spent_payment_method= ft.Dropdown(
         width=150,
-        options=[ft.dropdown.Option(k) for k in CONFIGURATION.get(API.PAYMENT_METHODS_KEY)]
+        options=[ft.dropdown.Option(k) for k in CONFIGURATION.get(API.PAYMENT_METHODS_KEY) if k!='']
     )
 
     spent_view = ft.Column()
