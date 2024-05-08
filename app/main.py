@@ -17,26 +17,37 @@ def save_spent(price, detail, category, payment_method):
 
 def main(page: ft.Page):
     async def add_clicked(e):
-        spent_view.controls.append(ft.Checkbox(label=spent.value))
+        spent_view.controls.append(
+            ft.Text(
+                f'{spent.value} {spent_detail.value}',
+                size=14,
+                color=ft.colors.GREEN_ACCENT_700,
+                weight=ft.FontWeight.W_100,
+            ))
+
         save_spent(spent.value, spent_detail.value, spent_category.value, spent_payment_method.value)
         spent.value = ""
         spent_detail.value = ""
         spent.focus()
-        view.update()
+        main_column.update()
 
     CONFIGURATION = STORAGE.get_config()
-    spent = ft.TextField(hint_text="$", expand=True)
+    spent = ft.TextField(expand=True)
     spent_detail = ft.TextField(hint_text="En qué?", expand=True)
-    spent_category = ft.Dropdown(
-        width=200,
+    spent_category = ft.Dropdown(hint_text='Y que es eso?',
         options=[ft.dropdown.Option(k) for k in CONFIGURATION.get(API.CATEGORIES_KEY)]
     )
-    spent_payment_method= ft.Dropdown(
-        width=150,
+    spent_category.value = spent_category.options[0]
+    spent_payment_method= ft.Dropdown(hint_text='Cómo pagaste?',
         options=[ft.dropdown.Option(k) for k in CONFIGURATION.get(API.PAYMENT_METHODS_KEY) if k!='']
     )
     
-    app_title = ft.ListTile(title=ft.Text("FLETAR"))
+    app_title = ft.Text(
+            "Fletar",
+            size=40,
+            color=ft.colors.GREEN,
+            weight=ft.FontWeight.W_100,
+        )
 
     spent_view = ft.Column()
 
@@ -80,7 +91,6 @@ def main(page: ft.Page):
             ft.Container(
                 spent_view,
                 padding=5,
-                bgcolor=ft.colors.YELLOW,
                 col={"sm": 6, "md": 4, "xl": 2},
             ),
 
