@@ -1,0 +1,13 @@
+version: '3'
+services:
+  app:
+    build: .
+    image: fletar
+    command: python main.py
+    ports:
+      - "80:8000"
+    volumes:
+      - ./app:/app
+    restart: always
+    environment:
+      - SPREADSHEET_URL=${SPREADSHEET_URL}
