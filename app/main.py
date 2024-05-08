@@ -39,20 +39,52 @@ def main(page: ft.Page):
     app_title = ft.ListTile(title=ft.Text("FLETAR"))
 
     spent_view = ft.Column()
-    view=ft.Column(
-        width=800,
+
+    spent_row = ft.ResponsiveRow(
+            [
+                ft.Container(
+                    spent,
+                    padding=5,
+                    col={"sm": 6, "md": 4, "xl": 2},
+                ),
+                ft.Container(
+                    spent_detail,
+                    padding=5,
+                    col={"sm": 6, "md": 4, "xl": 2},
+                ),
+                ft.Container(
+                    spent_category,
+                    padding=5,
+                    col={"sm": 6, "md": 4, "xl": 2},
+                ),
+                ft.Container(
+                    spent_payment_method,
+                    padding=5,
+                    col={"sm": 6, "md": 4, "xl": 2},
+                ),
+                ft.Container(
+                    ft.FloatingActionButton(icon=ft.icons.ADD, on_click=add_clicked),
+                    padding=5,
+                    col={"sm": 6, "md": 4, "xl": 2},
+                ),
+
+
+            ],
+            run_spacing={"xs": 10},
+    )
+
+    main_column = ft.Column(
         controls=[
             ft.Row(controls=[app_title]),
-            ft.Row(
-                controls=[
-                    spent,
-                    spent_detail,
-                    spent_category,
-                    spent_payment_method,
-                    ft.FloatingActionButton(icon=ft.icons.ADD, on_click=add_clicked),
-                ],
+            spent_row,
+            ft.Container(
+                spent_view,
+                padding=5,
+                bgcolor=ft.colors.YELLOW,
+                col={"sm": 6, "md": 4, "xl": 2},
             ),
-            spent_view,
+
+
         ],
     )
 
@@ -62,7 +94,9 @@ def main(page: ft.Page):
     page.scroll = ft.ScrollMode.ADAPTIVE
     page.theme = ft.Theme(color_scheme_seed="green")
     page.theme_mode = "light"
-    page.add(view)
+    page.add(
+        main_column
+    )
     spent.focus()
  
 ft.app(target=main, view=ft.AppView.WEB_BROWSER)
