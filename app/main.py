@@ -21,7 +21,7 @@ def main(page: ft.Page):
             ft.Text(
                 f'{spent.value} {spent_detail.value}',
                 size=14,
-                color=ft.colors.GREEN_ACCENT_700,
+                color=ft.colors.INDIGO_500,
                 weight=ft.FontWeight.W_100,
             ))
 
@@ -32,7 +32,7 @@ def main(page: ft.Page):
         main_column.update()
 
     CONFIGURATION = STORAGE.get_config()
-    spent = ft.TextField(expand=True)
+    spent = ft.TextField(hint_text="Cuánto?", expand=True)
     spent_detail = ft.TextField(hint_text="En qué?", expand=True)
     spent_category = ft.Dropdown(hint_text='Y que es eso?',
         options=[ft.dropdown.Option(k) for k in CONFIGURATION.get(API.CATEGORIES_KEY)]
@@ -45,7 +45,7 @@ def main(page: ft.Page):
     app_title = ft.Text(
             "Fletar",
             size=40,
-            color=ft.colors.GREEN,
+            color=ft.colors.INDIGO_500,
             weight=ft.FontWeight.W_100,
         )
 
@@ -102,7 +102,7 @@ def main(page: ft.Page):
     page.title = "Fletar(al presiduende)"
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.scroll = ft.ScrollMode.ADAPTIVE
-    page.theme = ft.Theme(color_scheme_seed="green")
+    page.theme = ft.Theme(color_scheme_seed="blue")
     page.theme_mode = "light"
     page.add(
         main_column
