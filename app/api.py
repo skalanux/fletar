@@ -5,7 +5,6 @@ import gspread
 
 
 CREDENTIALS = 'credentials.json'
-print(os.environ)
 SPREADSHEET_URL=os.environ['SPREADSHEET_URL']
 
 class API:  
